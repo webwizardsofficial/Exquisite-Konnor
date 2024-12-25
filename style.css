@@ -1,0 +1,6 @@
+#home {
+background: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.85)), url("assets/Home-bg.jpg");
+background-size: cover;
+background-repeat: no-repeat;
+background-position: center;
+}
