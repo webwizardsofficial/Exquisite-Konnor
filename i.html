@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce with Subcategories</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Skeleton loader animation */
+        .skeleton-loader {
+            background-color: #2d2d2d;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0% { background-color: #2d2d2d; }
+            50% { background-color: #4a4a4a; }
+            100% { background-color: #2d2d2d; }
+        }
+
+        /* Card skeleton */
+        .skeleton-card {
+            height: 300px;
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        /* Category button styles */
+        .category-button {
+            display: flex;
+            align-items: center;
+            background-color: #1f1f1f; /* Dark gray background */
+            color: white;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.5s ease, transform 0.5s ease; /* Smooth transition */
+        }
+
+        .category-button:hover {
+            background-color: #4a4a4a; /* Lighten gray on hover */
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        .category-button.active {
+            background-color: #6B46C1; /* Purple for active state */
+            transform: scale(1.05); /* Slightly enlarge when active */
+        }
+
+        .category-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .category-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        /* Subcategory styling */
+        .subcategory-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #4A5568; /* Dark gray */
+            color: white;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 25px; /* Rounded corners */
+            cursor: pointer;
+            transition: background-color 0.5s ease, transform 0.5s ease;
+            width: 200px; /* Wide subcategories */
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .subcategory-button:hover {
+            background-color: #3182CE; /* Blue on hover */
+            transform: scale(1.05); /* Enlarges the button on hover */
+        }
+
+        .subcategory-button.active {
+            background-color: #6B46C1; /* Purple when active */
+        }
+
+        /* Product grid styling */
+        .product-card {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05); /* Slightly enlarge on hover */
+            background-color: #4a4a4a;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        /* Body and text colors */
+        body {
+            background-color: #181818; /* Black background */
+            color: #e0e0e0; /* Light gray text */
+        }
+
+        h2, h3 {
+            color: #e0e0e0; /* Light gray headers */
+        }
+
+        .button {
+            background-color: #3182CE; /* Blue background */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.5s ease;
+        }
+
+        .button:hover {
+            background-color: #2563EB; /* Darker blue on hover */
+        }
+
+        .button:active {
+            background-color: #1D4ED8; /* Active blue */
+        }
+
+        /* Modal Styles */
+        #productModal {
+            max-width: 700px;
+            width: 100%;
+            background-color: #2d2d2d;
+            color: white;
+            border-radius: 12px;
+        }
+
+        #productModal .modal-header {
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4a4a4a;
+            margin-bottom: 20px;
+        }
+
+        #productModal .modal-body {
+            padding-bottom: 10px;
+        }
+
+        .modal-header h3 {
+            color: #e0e0e0;
+            font-size: 1.5rem;
+        }
+
+        .modal-body p {
+            color: #e0e0e0;
+        }
+
+        .modal-footer button {
+            background-color: #3182CE;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-footer button:hover {
+            background-color: #2563EB;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="bg-gray-800 text-white w-64 p-6 fixed top-0 bottom-0 left-0">
+            <h2 class="text-xl font-semibold mb-6">Categories</h2>
+
+            <!-- Main Categories -->
+            <div id="mainCategoryContainer">
+                <!-- Main category buttons will be dynamically added here -->
+            </div>
+
+        </div>
+
+        <!-- Main Content -->
+        <div class="ml-64 p-6 flex-1">
+            <h2 class="text-3xl font-semibold mb-6">Products</h2>
+
+            <!-- Subcategory Buttons -->
+            <div id="subcategoryContainer" class="flex flex-wrap gap-4 mb-6">
+                <!-- Subcategory buttons will be dynamically added here -->
+            </div>
+
+            <!-- Product Grid -->
+            <div id="productGrid" class="grid grid-cols-3 gap-6">
+                <!-- Skeleton loader cards will be here -->
+                <div class="skeleton-card skeleton-loader"></div>
+                <div class="skeleton-card skeleton-loader"></div>
+                <div class="skeleton-card skeleton-loader"></div>
+                <div class="skeleton-card skeleton-loader"></div>
+                <div class="skeleton-card skeleton-loader"></div>
+                <div class="skeleton-card skeleton-loader"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-gray-800 p-6 rounded-lg w-full max-w-lg">
+            <div class="modal-header">
+                <h3 id="productName" class="text-xl font-semibold">Product Name</h3>
+            </div>
+            <div class="modal-body">
+                <p id="productDescription">Product Description</p>
+                <div class="mt-4">
+                    <label for="userMessage" class="block text-gray-400">Your Message</label>
+                    <textarea id="userMessage" class="w-full p-2 border border-gray-500 rounded" rows="4" placeholder="Write your message..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer flex justify-between mt-6">
+                <button onclick="sendMessage('whatsapp')" class="bg-green-500 text-white px-4 py-2 rounded">Send via WhatsApp</button>
+                <button onclick="sendMessage('instagram')" class="bg-blue-500 text-white px-4 py-2 rounded">Send via Instagram</button>
+                <button onclick="sendMessage('email')" class="bg-gray-500 text-white px-4 py-2 rounded">Send via Email</button>
+            </div>
+            <button onclick="closeModal()" class="mt-4 text-red-500">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const products = [
+            { name: "T-Shirt", description: "Comfortable cotton t-shirt", category: "Clothing", subcategory: "T-Shirts", image: "https://via.placeholder.com/400x200/0000FF/808080?text=T-Shirt", id: 1 },
+            { name: "Sneakers", description: "Stylish running shoes", category: "Footwear", subcategory: "Sneakers", image: "https://via.placeholder.com/400x200/FF0000/FFFFFF?text=Sneakers", id: 2 },
+            { name: "Watch", description: "Luxury wrist watch", category: "Accessories", subcategory: "Watches", image: "https://via.placeholder.com/400x200/000000/FFFFFF?text=Watch", id: 3 },
+            // Add more products
+        ];
+
+        const categories = {
+            "Clothing": {
+                image: "https://via.placeholder.com/40/0000FF/FFFFFF?text=C",
+                quantity: 10,
+                subcategories: ["T-Shirts", "Jackets"]
+            },
+            "Footwear": {
+                image: "https://via.placeholder.com/40/FF0000/FFFFFF?text=F",
+                quantity: 8,
+                subcategories: ["Sneakers", "Boots"]
+            },
+            "Accessories": {
+                image: "https://via.placeholder.com/40/000000/FFFFFF?text=A",
+                quantity: 5,
+                subcategories: ["Watches", "Bags"]
+            }
+        };
+
+        const mainCategoryContainer = document.getElementById('mainCategoryContainer');
+        const subcategoryContainer = document.getElementById('subcategoryContainer');
+        const productGrid = document.getElementById('productGrid');
+
+        let selectedCategory = '';
+        let selectedSubcategory = '';
+
+        // Load main categories
+        function loadMainCategories() {
+            mainCategoryContainer.innerHTML = '';
+            for (const category in categories) {
+                const categoryButton = `
+                    <button class="category-button ${selectedCategory === category ? 'active' : ''}" onclick="filterProducts('${category}')">
+                        <img src="${categories[category].image}" alt="${category}" class="category-image">
+                        <div class="category-info">
+                            <span>${category}</span>
+                            <span class="text-xs">${categories[category].quantity} items</span>
+                        </div>
+                    </button>
+                `;
+                mainCategoryContainer.innerHTML += categoryButton;
+            }
+        }
+
+        // Load subcategories
+        function loadSubcategories(category) {
+            subcategoryContainer.innerHTML = '';
+            if (category && categories[category].subcategories) {
+                categories[category].subcategories.forEach(subcategory => {
+                    const subcategoryButton = `
+                        <button class="subcategory-button ${selectedSubcategory === subcategory ? 'active' : ''}" onclick="filterProducts('${category}', '${subcategory}')">
+                            ${subcategory}
+                        </button>
+                    `;
+                    subcategoryContainer.innerHTML += subcategoryButton;
+                });
+            }
+        }
+
+        // Filter products based on category and subcategory
+        function filterProducts(category, subcategory = '') {
+            selectedCategory = category;
+            selectedSubcategory = subcategory;
+            loadMainCategories();
+            loadSubcategories(category);
+
+            showSkeleton(true);
+
+            setTimeout(() => {
+                productGrid.innerHTML = '';
+
+                const filteredProducts = products.filter(product => {
+                    return (category ? product.category === category : true) &&
+                           (subcategory ? product.subcategory === subcategory : true);
+                });
+
+                filteredProducts.forEach(product => {
+                    const productCard = `
+                        <div class="product-card">
+                            <img src="${product.image}" alt="${product.name}" class="product-image">
+                            <h3 class="text-lg font-semibold">${product.name}</h3>
+                            <p class="text-sm text-gray-400">${product.description}</p>
+                            <button onclick="openProductModal(${product.id})" class="button">Buy/Inquire</button>
+                        </div>
+                    `;
+                    productGrid.innerHTML += productCard;
+                });
+
+                showSkeleton(false);
+            }, 1000);
+        }
+
+        // Show skeleton loader
+        function showSkeleton(isLoading) {
+            if (isLoading) {
+                productGrid.innerHTML = '';
+                for (let i = 0; i < 6; i++) {
+                    productGrid.innerHTML += '<div class="skeleton-card skeleton-loader"></div>';
+                }
+            }
+        }
+
+        // Open Product Modal
+        function openProductModal(productId) {
+            const product = products.find(p => p.id === productId);
+            document.getElementById('productName').textContent = product.name;
+            document.getElementById('productDescription').textContent = product.description;
+            document.getElementById('productModal').classList.remove('hidden');
+        }
+
+        // Close Product Modal
+        function closeModal() {
+            document.getElementById('productModal').classList.add('hidden');
+        }
+
+        // Simulate sending message via different channels
+        function sendMessage(channel) {
+            alert(`Sending message via ${channel}`);
+        }
+
+        // Initialize
+        loadMainCategories();
+        filterProducts('');
+    </script>
+</body>
+</html>
